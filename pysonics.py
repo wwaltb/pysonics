@@ -121,7 +121,7 @@ def remove_noise_cfar(data: np.ndarray, size: int, gap: int, bias: float):
 ### Audio Visualization ###
 
 norm_max = 10000
-def normalize_data(data: np.ndarray, smoothing_factor = 0.1):
+def normalize_data(data: np.ndarray, smoothing_factor = 0.05):
     """
     Normalizes an array of data by the max value smoothed by the previously recorded maximum (or 10000 if none) using a smoothing factor.  
     :param data: The array of data
@@ -136,7 +136,7 @@ def normalize_data(data: np.ndarray, smoothing_factor = 0.1):
         norm_max = smoothing_factor * data_max + (1 - smoothing_factor) * norm_max
     return data / norm_max
 
-def normalize_data2(data1: np.ndarray, data2: np.ndarray, smoothing_factor = 0.1):
+def normalize_data2(data1: np.ndarray, data2: np.ndarray, smoothing_factor = 0.05):
     """
     Normalizes two arrays of data by the max value found in either one. Smooths the maximum value by the previously recorded maximum (or 10000 if none) using a smoothing factor.  
     :param data1: The first array
@@ -150,6 +150,7 @@ def normalize_data2(data1: np.ndarray, data2: np.ndarray, smoothing_factor = 0.1
         norm_max = data_max
     else:
         norm_max = smoothing_factor * data_max + (1 - smoothing_factor) * norm_max
+
     return data1 / norm_max, data2 / norm_max
 
 def setup_window(width=800, height=400):
@@ -194,16 +195,17 @@ def draw_reflected_fft_spectrums(screen: pygame.Surface, data_top: np.ndarray, d
     width, height = screen.get_size()
     num_bars = len(data_top)
     bar_width = int(width / num_bars)
+    x_offset = (width - bar_width * num_bars) * 0.5
 
     norm_data_top, norm_data_bot = normalize_data2(data_top, data_bot)
 
     for i, (val_top, val_bot) in enumerate(zip(norm_data_top, norm_data_bot)):
-        bar_height_top = int(val_top * height * 0.50)
-        bar_height_bot = int(val_bot * height * 0.50)
+        bar_height_top = int(val_top * height * 0.45)
+        bar_height_bot = int(val_bot * height * 0.45)
 
-        pygame.draw.rect(screen, (118, 148, 106), (i * bar_width, height * 0.5 - bar_height_top, bar_width - 1, bar_height_top))
-        pygame.draw.rect(screen, (195, 64, 67), (i * bar_width, height * 0.5, bar_width - 1, bar_height_bot))
-        pygame.draw.rect(screen, (220, 215, 186), (0, height * 0.5 - 1, width, 2))
+        pygame.draw.rect(screen, (118, 148, 106), (x_offset + i * bar_width, height * 0.5 - bar_height_top, bar_width - 1, bar_height_top))
+        pygame.draw.rect(screen, (195, 64, 67), (x_offset + i * bar_width, height * 0.5, bar_width - 1, bar_height_bot))
+        pygame.draw.rect(screen, (220, 215, 186), (x_offset - bar_width * 2, height * 0.5 - 1, width - x_offset * 2 + bar_width * 4, 2))
 
     pygame.display.flip()
 
