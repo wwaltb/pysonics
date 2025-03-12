@@ -64,8 +64,8 @@ def compute_fft(data: np.ndarray):
     :param data: Input signal (1D array)
     :return: FFT magnitudes
     """
-    #data = remove_dc_offset(data)
-    #data = apply_hamming_window(data)
+    data = remove_dc_offset(data)
+    data = apply_hamming_window(data)
     window_size = int(len(data) * 0.5)
     fft_result = np.fft.fft(data)
     magnitudes = np.sqrt(fft_result.real[:window_size] ** 2 + fft_result.imag[:window_size] ** 2)
@@ -87,6 +87,21 @@ def smooth_data(data: np.ndarray, window_size: int):
         output[i] = np.mean(data[start_idx:end_idx + 1])
     
     return output
+
+smoothed_data: np.ndarray | None = None
+def smooth_data_over_time(data: np.ndarray, smoothing_factor: float = 0.05):
+    global smoothed_data
+    if smoothed_data is None:
+        smoothed_data = data
+
+    for i in range(len(data)):
+        if data[i] >= smoothed_data[i]:
+            smoothed_val = smoothing_factor * data[i] + (1 - smoothing_factor) * smoothed_data[i]
+            smoothed_data[i] = smoothed_val
+        else:
+            smoothed_val = smoothing_factor * data[i] + (1 - smoothing_factor) * smoothed_data[i]
+            smoothed_data[i] = smoothed_val
+    return smoothed_data
 
 def remove_noise_cfar(data: np.ndarray, size: int, gap: int, bias: float):
     """
