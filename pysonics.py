@@ -95,12 +95,8 @@ def smooth_data_over_time(data: np.ndarray, smoothing_factor: float = 0.05):
         smoothed_data = data
 
     for i in range(len(data)):
-        if data[i] >= smoothed_data[i]:
-            smoothed_val = smoothing_factor * data[i] + (1 - smoothing_factor) * smoothed_data[i]
-            smoothed_data[i] = smoothed_val
-        else:
-            smoothed_val = smoothing_factor * data[i] + (1 - smoothing_factor) * smoothed_data[i]
-            smoothed_data[i] = smoothed_val
+        smoothed_val = smoothing_factor * data[i] + (1 - smoothing_factor) * smoothed_data[i]
+        smoothed_data[i] = smoothed_val
     return smoothed_data
 
 def remove_noise_cfar(data: np.ndarray, size: int, gap: int, bias: float):
@@ -168,7 +164,7 @@ def normalize_data2(data1: np.ndarray, data2: np.ndarray, smoothing_factor = 0.0
 
     return data1 / norm_max, data2 / norm_max
 
-def setup_window(width=800, height=400):
+def setup_window(width=1200, height=800):
     """
     Sets up the Pygame window for real-time FFT visualization.
     :param width: Width of the window
