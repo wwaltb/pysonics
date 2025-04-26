@@ -24,12 +24,13 @@ def real_time_plot():
         # compute fft and analyze
         fd_data = ps.compute_fft(data)
         fd_smoothed = ps.smooth_data(fd_data, 1)
-        fd_filtered = ps.remove_noise_cfar(fd_data, 3, 1, 1)
+        fd_filtered = ps.remove_noise_cfar(fd_data, 6, 2, 1)
         fd_blended = ps.smooth_data_over_time(fd_filtered, 0.16)
         fd_percussion = fd_data - fd_blended
 
         # draw filtered and raw spectrum
-        ps.draw_reflected_fft_spectrums(screen, fd_blended, fd_percussion)
+        ps.draw_reflected_fft_spectrums(screen, fd_filtered, fd_smoothed)
+        #ps.draw_reflected_fft_spectrums(screen, fd_blended, fd_percussion)
 
     # close pysonics
     ps.close_audio_stream(p, stream)
