@@ -4,19 +4,18 @@ A python module to streamline real-time audio processing, analysis and visualiza
 ![Example visualization of raw and processed frequency spectrums](https://github.com/wwaltb/pysonics/blob/main/misc/visualizer.gif)
 ## Installation/Setup
 ### Linux
-#### Arch
-1. Install Dependencies:
-    - Pyaudio: `sudo pacman -S python-pyaudio`
-    - Pygame: `sudo pacman -S python-pygame`
-    - (Optional) PulseAudio Volume Control: `sudo pacman -S pavucontrol`
+#### Arch Installation:
+- Pyaudio: `sudo pacman -S python-pyaudio`
+- Pygame: `sudo pacman -S python-pygame`
+- (Optional) PulseAudio Volume Control: `sudo pacman -S pavucontrol`
 
-2. Setup Input Device:
-    - Open `pavucontrol` -> `Input Devices`
-    - Make sure `show` is set to `All Input Devices` or `Monitors`
-    - Set the monitor of your desired audio source as the default input device
+#### Setup Input Device:
+- Open `pavucontrol` -> `Input Devices`
+- Make sure `show` is set to `All Input Devices` or `Monitors`
+- Set the monitor of your desired audio source as the default input device
 
 ### MacOS
-#### Install via Homebrew and pip
+#### Install via Homebrew and pip:
 1. Install Dependencies: 
     - Portaudio: `brew install portaudio`
     - Pyaudio: `pip install pyaudio`
