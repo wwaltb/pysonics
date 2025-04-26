@@ -242,3 +242,21 @@ def close_window():
     Closes the Pygame window.
     """
     pygame.quit()
+from setuptools import setup, find_packages
+
+setup(
+    name="pysonic",
+    version="0.1.0",
+    packages=find_packages(),
+    install_requires=[
+        "numpy",
+        "pygame",
+        "pyaudio",
+    ],
+    entry_points={
+        'console_scripts': [
+            'pysonic = pysonic.cli:main',
+        ],
+    },
+    python_requires='>=3.8',
+)

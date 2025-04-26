@@ -3,6 +3,19 @@ A python module to streamline real-time audio processing, analysis and visualiza
 
 ![Example visualization of raw and processed frequency spectrums](https://github.com/wwaltb/pysonics/blob/main/misc/visualizer.gif)
 ## Installation/Setup
+
+### Install via pip
+
+```bash
+pip install .
+```
+
+### Run the application:
+
+```bash
+pysonic
+```
+
 ### Linux
 #### Arch Installation:
 - Pyaudio: `sudo pacman -S python-pyaudio`
