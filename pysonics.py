@@ -1,15 +1,20 @@
+"""
+Pysonics: A python mmodule for real-time audio analysis and visualization.
+"""
+
 import pyaudio
 import numpy as np
 import pygame
 
 ### Audio Capture ###
 
-def setup_audio_stream(sample_rate, window_size, device_name="default"):
+def setup_audio_stream(sample_rate: int, window_size: int, device_name="default"):
     """
-    Sets up and returns a PyAudio stream.
+    Sets up and returns a PyAudio instance and stream.
     :param sample_rate: Rate to sample the stream at (Hz)
     :param window_size: Number of samples per frame
-    :return: PyAudio instance, open stream, and the stream's default sample rate
+    :raises ValueError: If the specified device name is not found
+    :return: PyAudio instance and the opened PyAudio stream
     """
     p = pyaudio.PyAudio()
 
@@ -22,23 +27,32 @@ def setup_audio_stream(sample_rate, window_size, device_name="default"):
             device_index = i
             break
     
+    # Print vailable devices and raise error if the specified device is not
+    # found
     if device_index is None:
         available_devices = "\n".join(
-            [str(p.get_device_info_by_index(i).get("name", "Unknown")) for i in range(p.get_device_count())]
+            [str(p.get_device_info_by_index(i).get("name", "Unknown")) for i in
+                range(p.get_device_count())]
         )
-        raise ValueError(f"Could not find device matching '{device_name}'. Available devices:\n{available_devices}")
+        raise ValueError(f"Could not find device matching '{device_name}'. \
+            Available devices:\n{available_devices}")
 
-    stream = p.open(format=pyaudio.paInt16, channels=1, rate=sample_rate, input=True, frames_per_buffer=window_size)
+    stream: pyaudio.Stream = p.open(format=pyaudio.paInt16, channels=1,
+                                    rate=sample_rate, input=True,
+                                    frames_per_buffer=window_size)
+
     return p, stream
 
 def capture_time_domain_signal(stream, window_size):
     """
-    Captures a single chunk of audio data using an open PyAudio stream and returns it as a NumPy array.
+    Captures a single chunk of audio data using an open PyAudio stream and
+    returns it as a NumPy array.
     :param stream: Open PyAudio stream
     :param window_size: Number of samples per frame
     :return: 1D array of recorded audio samples
     """
-    return np.frombuffer(stream.read(window_size, exception_on_overflow=False), dtype=np.int16)
+    return np.frombuffer(stream.read(window_size, exception_on_overflow=False),
+                         dtype=np.int16)
 
 def close_audio_stream(p, stream):
     """
@@ -75,7 +89,8 @@ def smooth_data(data: np.ndarray, window_size: int):
     """
     Computes a moving average of the data based on a smoothing window size.
     :param data: Input data (1D array)
-    :param window_size: Number of samples around the current sample to use for averaging
+    :param window_size: Number of samples around the current sample to use for
+    averaging
     :return: Smoothed data
     """
     output = np.copy(data)
@@ -149,7 +164,9 @@ def normalize_data(data: np.ndarray, smoothing_factor = 0.05):
 
 def normalize_data2(data1: np.ndarray, data2: np.ndarray, smoothing_factor = 0.05):
     """
-    Normalizes two arrays of data by the max value found in either one. Smooths the maximum value by the previously recorded maximum (or 10000 if none) using a smoothing factor.  
+    Normalizes two arrays of data by the max value found in either one. Smooths
+    the maximum value by the previously recorded maximum (or 10000 if none)
+    using a smoothing factor.  
     :param data1: The first array
     :param data2: The second array
     :param smoothing_factor: The factor to smooth the max value by (lower is smoother)
