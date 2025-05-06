@@ -3,19 +3,6 @@ A python module to streamline real-time audio processing, analysis and visualiza
 
 ![Example visualization of raw and processed frequency spectrums](https://github.com/wwaltb/pysonics/blob/main/misc/visualizer.gif)
 ## Installation/Setup
-
-### Install via pip
-
-```bash
-pip install .
-```
-
-### Run the application:
-
-```bash
-pysonic
-```
-
 ### Linux
 #### Arch Installation:
 - Pyaudio: `sudo pacman -S python-pyaudio`
@@ -43,3 +30,15 @@ pysonic
     - Configure your system's input and output devices:
         - `System Settings ` -> `Sound` -> `Output` -> `Multi-Output Device`
         - `System Settings ` -> `Sound` -> `Input` -> `BlackHole 2ch`
+
+### Windows
+1. Install Dependencies:
+    - Pyaudio: `pip install pyaudio`
+    - Pygame: `pip install pygame`
+
+2. Create a Monitor of System Audio:
+    - Install VB-CABLE: [Download](https://vb-audio.com/Cable/)
+    - Restart your computer
+    - Configure your system's input and output devices:
+        - `Settings` -> `System` -> `Sound` -> `Output` -> `CABLE Input`
+        - `Settings` -> `System` -> `Sound` -> `Input` -> `CABLE Output`
