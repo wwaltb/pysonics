@@ -144,12 +144,65 @@ def remove_noise_cfar(data: np.ndarray, size: int, gap: int, bias: float):
     
     return filtered_data
 
+# https://www.youtube.com/watch?v=2s3aJfRr9gE
+def compute_entropy(data: np.ndarray):
+    entropy = 0.0
+    for i in range(len(data)):
+        # p is the spectral density of the bin, or the percent of the total
+        # amplitude it containts. For calculating entropy, it is helpful to
+        # think of this as the probability of the bin containing energy.
+        p = data[i] / (sum(data) + 1e-10)
+        # Calculate the entropy addition of each bin:
+        #
+        # -log(p) is the 'self-information' of the bin. It is a measure of how
+        # surprising it is to see energy in that bin. If p is close to 1, then
+        # it is not surprising at all to see energy there, but if it is small
+        # it this value will be greater, meaning it is very suprising to see
+        # energy there. This makes sense as p was calculated as the percent of
+        # the total energy that the bin contains.
+        #
+        # We weight this 'self-information' value with the actual percent of
+        # the total amplitude that bin has so that bins with very little energy
+        # do not dominate the entropy value.
+        entropy += p * -(np.log2(p))
+
+    # normalize the entropy value by the log2 of the number of bins, which is
+    # the maximum possible entropy value.
+    return entropy / np.log2(len(data))
+
+# A measure of how flat the spectrum is. Computes the ratio of geometric mean
+# to arithmetic mean. The geometric mean gets further way from the arithmetic
+# mean as the spectrum becomes more spiky. This means a perfectly even
+# distribution has a flatness of 1, and a single spike has a flatness close to
+# 0.
+def compute_flatness(data: np.ndarray):
+    arithmetic_mean = np.mean(data)
+    # calculate the geometric mean (needs more precision to calculate the
+    # product of all the amplitude values)
+    geometric_mean: np.float128 = np.float128(1.)
+    for i in range(len(data)):
+        geometric_mean *= data[i]
+    geometric_mean = geometric_mean ** np.float128(1. / len(data))
+    return geometric_mean / arithmetic_mean
+
+        
+# https://en.wikipedia.org/wiki/Spectral_flux
+# Computes the spectral flux between two frames. Gives a measure of how much
+# the spectral energy has increased between frames, normalized by the total
+# energy. This value can be used to detect onsets.
+def compute_flux(currentData: np.ndarray, previousData: np.ndarray):
+    rectified_flux = 0.0
+    for i in range(len(currentData)):
+        rectified_flux += pow(max(0, currentData[i] - previousData[i]), 2)
+    return rectified_flux / sum(currentData ** 2)
+
 ### Audio Visualization ###
 
 norm_max = 10000
 def normalize_data(data: np.ndarray, smoothing_factor = 0.05):
     """
-    Normalizes an array of data by the max value smoothed by the previously recorded maximum (or 10000 if none) using a smoothing factor.  
+    Normalizes an array of data by the max value smoothed by the previously
+    recorded maximum (or 10000 if none) using a smoothing factor.  
     :param data: The array of data
     :param smoothing_factor: The factor to smooth the max value by (lower is smoother)
     return: The normalized array
@@ -242,21 +295,3 @@ def close_window():
     Closes the Pygame window.
     """
     pygame.quit()
-from setuptools import setup, find_packages
-
-setup(
-    name="pysonic",
-    version="0.1.0",
-    packages=find_packages(),
-    install_requires=[
-        "numpy",
-        "pygame",
-        "pyaudio",
-    ],
-    entry_points={
-        'console_scripts': [
-            'pysonic = pysonic.cli:main',
-        ],
-    },
-    python_requires='>=3.8',
-)
