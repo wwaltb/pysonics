@@ -28,8 +28,8 @@ A python module to streamline real-time audio processing, analysis and visualiza
     guide](https://github.com/ExistentialAudio/BlackHole/wiki/Multi-Output-Device)
         - Make sure it uses BlackHole and the output device you want to capture
     - Configure your system's input and output devices:
-        - `System Settings ` -> `Sound` -> `Output` -> `Multi-Output Device`
-        - `System Settings ` -> `Sound` -> `Input` -> `BlackHole 2ch`
+        - `System Settings` -> `Sound` -> `Output` -> `Multi-Output Device`
+        - `System Settings` -> `Sound` -> `Input` -> `BlackHole 2ch`
 
 ### Windows
 1. Install Dependencies:
